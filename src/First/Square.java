@@ -1,20 +1,31 @@
 package First;
 
-public class Square{
-    char piece;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
+
+public class Square extends Button {
+    String piece;
 
     Square(){
-        piece = ' ';
+        piece = null;
+        this.setPrefSize(100,100);
+        this.setStyle("-fx-font-size: 30; ");
+
     }
-    void setPiece(char piece) {
-        piece = Character.toUpperCase(piece);
-        if(piece == 'X' || piece == 'O' || piece == ' ')
+    void setPiece(String piece) {
+        piece.toUpperCase();
+        if(piece == "X" || piece == "O" || piece == null){
+            this.setText(piece);
             this.piece = piece;
+        }
         else
             throw new IllegalArgumentException("Wrong character input");
+        System.out.println(piece);
     }
 
-    char getPiece(){
+
+    String getPiece(){
         return this.piece;
     }
     String drawSquare(){
@@ -22,6 +33,6 @@ public class Square{
     }
 
     void clearSquare(){
-        this.setPiece(' ');
+        this.setPiece(null);
     }
 }
