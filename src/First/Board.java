@@ -1,4 +1,10 @@
 package First;
+
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.layout.TilePane;
+
 public class Board{
     Square squares[][];
 
@@ -14,18 +20,30 @@ public class Board{
         for(int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
                 squares[i][j] = new Square();
+                int finalJ = j;
+                int finalI = i;
+                squares[i][j].setOnAction(new EventHandler<ActionEvent>() {
+
+                    @Override
+                    public void handle(ActionEvent event) {
+                        squares[finalI][finalJ].setPiece(GameLogic.changeTurn());
+                        System.out.println(checkWin());
+                    }
+                });
             }
         }
     }
 
-    void printBoard(){
+    TilePane printBoard(){
+        TilePane tilePane= new TilePane();
         for(int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
-                System.out.print(squares[i][j].drawSquare());
+                tilePane.getChildren().add(squares[i][j]);
+                tilePane.setTileAlignment(Pos.TOP_LEFT);
             }
-            System.out.print("|\n");
         }
 
+        return  tilePane;
     }
 
     void placePiece(Player player, int r, int c){
@@ -37,18 +55,18 @@ public class Board{
 
     boolean checkWin(){
         for(int i = 0; i < 3; i++){
-            if(squares[i][0].getPiece() == squares[i][1].getPiece() && squares[i][1].getPiece() == squares[i][2].getPiece() && squares[i][0].getPiece() != ' '){
+            if(squares[i][0].getPiece() == squares[i][1].getPiece() && squares[i][1].getPiece() == squares[i][2].getPiece() && squares[i][0].getPiece() != null){
                 System.out.println(i);
                 return true;
             }
-            if(squares[0][i].getPiece() == squares[1][i].getPiece() && squares[0][i].getPiece() == squares[2][i].getPiece() && squares[0][i].getPiece() != ' '){
+            if(squares[0][i].getPiece() == squares[1][i].getPiece() && squares[0][i].getPiece() == squares[2][i].getPiece() && squares[0][i].getPiece() != null){
                 return true;
             }
         }
-        if(squares[0][0].getPiece() == squares[1][1].getPiece() && squares[1][1].getPiece() == squares[2][2].getPiece() && squares[0][0].getPiece() != ' '){
+        if(squares[0][0].getPiece() == squares[1][1].getPiece() && squares[1][1].getPiece() == squares[2][2].getPiece() && squares[0][0].getPiece() != null){
             return true;
         }
-        if(squares[2][0].getPiece() == squares[1][1].getPiece() && squares[1][1].getPiece() == squares[0][2].getPiece() && squares[0][2].getPiece() != ' '){
+        if(squares[2][0].getPiece() == squares[1][1].getPiece() && squares[1][1].getPiece() == squares[0][2].getPiece() && squares[0][2].getPiece() != null){
             return true;
         }
         return false;

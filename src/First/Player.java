@@ -1,14 +1,14 @@
 package First;
 public class Player{
-    char piece;
+    String piece;
     String name;
 
-    public char getPiece() {
+    public String getPiece() {
         return piece;
     }
-    public void setPiece(char piece) {
-        piece = Character.toUpperCase(piece);
-        if(piece == 'X' || piece == 'O')
+    public void setPiece(String piece) {
+        piece.toUpperCase();
+        if(piece == "X" || piece == "O")
             this.piece = piece;
         else
             throw new IllegalArgumentException("Wrong character input");
