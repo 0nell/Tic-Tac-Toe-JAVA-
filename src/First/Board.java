@@ -20,16 +20,6 @@ public class Board{
         for(int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
                 squares[i][j] = new Square();
-                int finalJ = j;
-                int finalI = i;
-                squares[i][j].setOnAction(new EventHandler<ActionEvent>() {
-
-                    @Override
-                    public void handle(ActionEvent event) {
-                        squares[finalI][finalJ].setPiece(GameLogic.changeTurn());
-                        System.out.println(checkWin());
-                    }
-                });
             }
         }
     }
