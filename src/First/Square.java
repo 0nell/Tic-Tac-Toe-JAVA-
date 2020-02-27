@@ -8,21 +8,34 @@ import javafx.scene.control.Button;
 
 public class Square extends Button {
     String piece;
+
+    public boolean isEmpty() {
+        return empty;
+    }
+
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
+    }
+
+    boolean empty;
     Square(){
         piece = null;
+        this.setEmpty(true);
         this.setPrefSize(100,100);
         this.setStyle("-fx-font-size: 30; ");
     }
 
     void setPiece(String piece) {
         piece.toUpperCase();
-        if(piece == "X" || piece == "O" || piece == null){
+        if(this.isEmpty()){
             this.setText(piece);
             this.piece = piece;
+            GameLogic.changeTurn();
+            this.setEmpty(false);
         }
         else
-            throw new IllegalArgumentException("Wrong character input");
-        System.out.println(piece);
+            throw new IllegalArgumentException("Square is full");
+
     }
 
     String getPiece(){
@@ -33,5 +46,6 @@ public class Square extends Button {
     void clearSquare(){
         this.piece = null;
         this.setPiece(null);
+        this.setEmpty(true);
     }
 }
