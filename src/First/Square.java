@@ -2,10 +2,6 @@ package First;
 
 import javafx.scene.control.Button;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.Button;
-
 public class Square extends Button {
     String piece;
 
@@ -26,7 +22,6 @@ public class Square extends Button {
     }
 
     void setPiece(String piece) {
-        piece.toUpperCase();
         if(this.isEmpty()){
             this.setText(piece);
             this.piece = piece;
@@ -44,8 +39,9 @@ public class Square extends Button {
 
 
     void clearSquare(){
-        this.piece = null;
-        this.setPiece(null);
         this.setEmpty(true);
+        this.piece = null;
+        this.setText("");
+
     }
 }

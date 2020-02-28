@@ -1,78 +1,66 @@
 package First;
+//Cannot quit after starting game before inputting name, remove names (unnecessary)
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Test extends Application {
     Stage window;
-    Scene game, winner, start;
+    Scene game, end, start;
+
     @Override
     public void start(Stage primaryStage) {
-        GameLogic gameLogic = new GameLogic();
+        //GameLogic gameLogic = new GameLogic();
         Board board = new Board();
-        Player players[] = GameLogic.setPlayers();
+        final Player[][] players = new Player[1][2];
+        Scenes menus = new Scenes();
 
         window = primaryStage;
         //Start scene
-        Label startLabel = new Label("Welcome to the game");
 
-        Button startButton = new Button("Start Game");
-        startButton.setOnAction(e -> window.setScene(game));
-        Button closeButton = new Button("Quit");
-        closeButton.setOnAction(e -> window.close());
+        menus.getCloseButton().setOnAction(e -> window.close());
+        menus.getStartButton().setOnAction(actionEvent -> {
+            window.setScene(game);
+            board.resetBoard();
+            players[0] = GameLogic.setPlayers();
 
-        //GridPane
-        GridPane gridPane1 = new GridPane();
-        gridPane1.setMinWidth(30);
-        gridPane1.setHgap(17);
-        gridPane1.add(closeButton, 6,10,1,1);
-        gridPane1.add(startButton,5,10,1,1);
+        });
 
-        StackPane startPane = new StackPane();
-        startPane.getChildren().addAll(gridPane1, startLabel);
 
-        start = new Scene(startPane, 300, 300);
+        start = new Scene(menus.getStartPane(), 300, 300);
         // Game scenel
-        game = new Scene(board.printBoard(), 300,300);
+        game = new Scene(board.printBoard(), 300, 300);
 
-        //winner Scene
-        Label label = new Label("It's a tie");
-        StackPane layout = new StackPane();
-        layout.getChildren().add(label);
-        winner = new Scene(layout, 300, 300);
+        menus.getEndButton().setOnAction(e -> window.setScene(start));
+        menus.getEndCloseButton().setOnAction(e -> window.close());
+        end = new Scene(menus.getEndPane(), 300, 300);
 
-        for(int i = 0; i < 3; i++){
-            for (int j = 0; j < 3; j++){
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
                 int finalJ = j;
                 int finalI = i;
-                board.squares[i][j].setOnAction(new EventHandler<ActionEvent>() {
-
-                    @Override
-                    public void handle(ActionEvent event) {
-                        try{
-                            board.squares[finalI][finalJ].setPiece(players[GameLogic.getTurn()].getPiece());
-                        }
-                        catch (IllegalArgumentException e){
-                            System.out.println(e);
-                        }
-
-
-                        if(board.checkWin()){
-                            GameLogic.changeTurn();
-                            label.setText("The winner is " + players[GameLogic.getTurn()].getName());
-                            window.setScene(winner);
-                        }
+                board.squares[i][j].setOnAction(event -> {
+                    try {
+                        board.squares[finalI][finalJ].setPiece(players[0][GameLogic.getTurn()].getPiece());
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e);
                     }
+
+
+                    if (board.checkWin()) {
+                        GameLogic.changeTurn();
+                        menus.getEndLabel().setText("The winner is " + players[0][GameLogic.getTurn()].getName());
+                        window.setScene(end);
+                    }
+                    if (board.checkDraw()) {
+                        GameLogic.changeTurn();
+                        menus.getEndLabel().setText("It is a Tie!");
+                        board.resetBoard();
+                        window.setScene(end);
+
+                    }
+
                 });
             }
         }

@@ -8,10 +8,8 @@ public class Player{
     }
     public void setPiece(String piece) {
         piece.toUpperCase();
-        if(piece == "X" || piece == "O")
-            this.piece = piece;
-        else
-            throw new IllegalArgumentException("Wrong character input");
+        this.piece = piece;
+
     }
 
     public String getName() {
@@ -24,6 +22,11 @@ public class Player{
 
     public Player(String name) {
         this.name = name;
+    }
+
+    public void resetPlayer() {
+        this.setPiece("");
+        this.setName(null);
     }
 
 }
