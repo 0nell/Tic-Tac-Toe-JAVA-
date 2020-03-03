@@ -24,7 +24,7 @@ public class Board{
                 squares[i][j].clearSquare();
             }
         }
-        GameLogic.setTurn(0);
+        GameLogic.setTurn("X");
     }
 
     TilePane printBoard() {

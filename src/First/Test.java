@@ -1,5 +1,5 @@
 package First;
-//Cannot quit after starting game before inputting name, remove names (unnecessary)
+
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -23,7 +23,7 @@ public class Test extends Application {
         menus.getStartButton().setOnAction(actionEvent -> {
             window.setScene(game);
             board.resetBoard();
-            players[0] = GameLogic.setPlayers();
+
 
         });
 
@@ -42,7 +42,7 @@ public class Test extends Application {
                 int finalI = i;
                 board.squares[i][j].setOnAction(event -> {
                     try {
-                        board.squares[finalI][finalJ].setPiece(players[0][GameLogic.getTurn()].getPiece());
+                        board.squares[finalI][finalJ].setPiece(GameLogic.getTurn());
                     } catch (IllegalArgumentException e) {
                         System.out.println(e);
                     }
@@ -50,7 +50,7 @@ public class Test extends Application {
 
                     if (board.checkWin()) {
                         GameLogic.changeTurn();
-                        menus.getEndLabel().setText("The winner is " + players[0][GameLogic.getTurn()].getName());
+                        menus.getEndLabel().setText("The winner is " + GameLogic.getTurn());
                         window.setScene(end);
                     }
                     if (board.checkDraw()) {
