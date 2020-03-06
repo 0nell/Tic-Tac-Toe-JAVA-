@@ -1,14 +1,13 @@
 import java.util.Scanner;
 
 public class GameLogic {
-    public static Player[] setPlayers(){
-        Player players[] = new Player[2];
+    public static Player[] setPlayers(Player[] players){
         String tempName;
         Scanner in = new Scanner(System.in);
         for(int i = 0; i < 2; i++){
             System.out.println("Player "+(i+1) + " please enter your name: ");
             tempName = in.nextLine();
-            players[i] = new Player(tempName);
+            players[i].setName(tempName);
         }
         players[0].setPiece('X');
         players[1].setPiece('O');
