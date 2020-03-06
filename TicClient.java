@@ -18,12 +18,17 @@ public class TicClient{
             String fromServer;
             String fromUser;
 
+            
+            
             while ((fromServer = in.readLine()) != null){
-                System.out.println(fromServer);
-
-                fromUser = stdIn.readLine();
-                if(fromUser != null){
-                    out.println(fromUser);
+                if(!fromServer.equals("input"))
+                    System.out.println(fromServer);
+                
+                else{
+                    fromUser = stdIn.readLine();
+                    if(fromUser != null){
+                        out.println(fromUser);
+                    }
                 }
             }
             

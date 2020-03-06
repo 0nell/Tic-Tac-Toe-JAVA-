@@ -27,11 +27,12 @@ public class Test{
         return pass;
     }
     static boolean testBoard(){
-        Player player = new Player("Lleno");
+        Player player = new Player();
         player.setPiece('X');
         boolean pass = true;
         boolean error = false;
         Board board = new Board();
+        System.out.println(board.toString());
 
         try {
             board.placePiece(player, 0, 5);
@@ -138,7 +139,7 @@ public class Test{
     }
     static boolean testPlayer(){
         boolean pass = true;
-        Player player = new Player("Anya");
+        Player player = new Player();
         player.setPiece('X');
         if(!(player.getPiece() == 'X')){
             System.out.println("setPiece fails");
