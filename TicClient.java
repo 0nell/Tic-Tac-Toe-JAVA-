@@ -4,11 +4,11 @@ import java.net.*;
 
 public class TicClient{
     public static void main(String[] args) throws IOException{
-        String hostName = "Leo-Pred";
+        String hostName = "10.10.2.223";
         int portNumber = 4444;
 
         try (
-            Socket tSocket = new Socket(hostName, portNumber);
+            Socket tSocket = new Socket(InetAddress.getByName(hostName), portNumber);
             PrintWriter out = new PrintWriter(tSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(
                 new InputStreamReader(tSocket.getInputStream()));
