@@ -6,7 +6,7 @@ public class TicServer {
     public static void main(String[] args) throws IOException{
         int portNumber = 4444;
         Player players[] = new Player[2];
-        int winner = 0;
+        
         Board board = new Board();
         players[0] = new Player();
         players[1] = new Player();
@@ -18,51 +18,32 @@ public class TicServer {
                 new PrintWriter(clientSocket1.getOutputStream(), true);
             BufferedReader in1 = new BufferedReader(
                 new InputStreamReader(clientSocket1.getInputStream()));
-                Socket clientSocket2 = serverSocket.accept();
+            Socket clientSocket2 = serverSocket.accept();
             PrintWriter out2 =
                 new PrintWriter(clientSocket2.getOutputStream(), true);
             BufferedReader in2 = new BufferedReader(
                 new InputStreamReader(clientSocket2.getInputStream()));
         ){
-            String inputLine, outputLine;
+            String  outputLine;
             TicProtocol ticProtocol = new TicProtocol();
            
             //Set Players
-            ticProtocol.setPlayer(players[0]);
-            ticProtocol.setPlayer(players[1]);
-            out1.println("You're " + players[0].getPiece());
-            out2.println("You're " + players[1].getPiece());
+            ticProtocol.setPlayer(players[0], in1, out1);
+            ticProtocol.setPlayer(players[1], in2, out2);
+
+            players[0].getOut().println("You're " + players[0].getPiece());
+            players[1].getOut().println("You're " + players[1].getPiece());
 
             //Play game
             outputLine = ticProtocol.startInstruction();
-            out1.println(outputLine);
-            out2.println(outputLine);
-            out1.println(board.toString());
-            out2.println(board.toString());
+            players[0].getOut().println(outputLine);
+            players[1].getOut().println(outputLine);
 
-            while(!board.checkWin()){
-                
-
-                out1.println("input");
-                inputLine = in1.readLine();
-                board = ticProtocol.oneTurn(players[0],inputLine, board);
-                winner = 0;
-                out1.println(board.toString());
-                out2.println(board.toString());
-                
-                if(!board.checkWin()){
-                    out2.println("input"); 
-                    inputLine = in2.readLine();
-                    board = ticProtocol.oneTurn(players[1],inputLine, board);
-                    winner = 1;
-                }
-                out1.println(board.toString());
-                out2.println(board.toString());
-            }
-
-            outputLine = ticProtocol.winInstruction(players[winner]);
-            out1.println(outputLine);
-            out2.println(outputLine);
+            board = ticProtocol.serverLoop(board, players);
+            
+            outputLine = ticProtocol.winInstruction(board);
+            players[0].getOut().println(outputLine);
+            players[1].getOut().println(outputLine);
 
             
             

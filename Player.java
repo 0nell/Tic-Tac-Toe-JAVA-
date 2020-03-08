@@ -1,10 +1,10 @@
 import java.io.*;
-import java.net.*;
 
 public class Player{
     char piece;
     String name;
-
+    PrintWriter out;
+    BufferedReader in;
 
     public char getPiece() {
         return piece;
@@ -23,6 +23,22 @@ public class Player{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public PrintWriter getOut() {
+        return out;
+    }
+
+    public void setOut(PrintWriter out) {
+        this.out = out;
+    }
+
+    public BufferedReader getIn() {
+        return in;
+    }
+
+    public void setIn(BufferedReader in) {
+        this.in = in;
     }
 
 }
