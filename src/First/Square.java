@@ -4,6 +4,7 @@ import javafx.scene.control.Button;
 
 public class Square extends Button {
     String piece;
+    boolean empty;
 
     public boolean isEmpty() {
         return empty;
@@ -13,7 +14,7 @@ public class Square extends Button {
         this.empty = empty;
     }
 
-    boolean empty;
+
     Square(){
         piece = null;
         this.setEmpty(true);
