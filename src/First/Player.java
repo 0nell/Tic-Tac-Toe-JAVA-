@@ -1,32 +1,41 @@
 package First;
-public class Player{
+
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+
+public class Player {
     String piece;
-    String name;
+    PrintWriter out;
+    BufferedReader in;
+
 
     public String getPiece() {
         return piece;
     }
+
     public void setPiece(String piece) {
-        piece.toUpperCase();
         this.piece = piece;
-
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Player(String name) {
-        this.name = name;
-    }
 
     public void resetPlayer() {
         this.setPiece("");
-        this.setName(null);
+    }
+
+    public PrintWriter getOut() {
+        return out;
+    }
+
+    public void setOut(PrintWriter out) {
+        this.out = out;
+    }
+
+    public BufferedReader getIn() {
+        return in;
+    }
+
+    public void setIn(BufferedReader in) {
+        this.in = in;
     }
 
 }
