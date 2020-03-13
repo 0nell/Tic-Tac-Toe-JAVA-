@@ -1,56 +1,76 @@
 package First;
+
+
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+    Stage window;
+    Scene game, end, start;
+
+    public static void main(String[] args) {
+        launch(args);
+
+    }
 
     @Override
     public void start(Stage primaryStage) {
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
 
-            @Override
-            public void handle(ActionEvent event) {
-                btn.setText("Hello World'");
-            }
+        Board board = new Board();
+        Scenes menus = new Scenes();
+
+        window = primaryStage;
+        //Start scene
+
+        menus.getCloseButton().setOnAction(e -> window.close());
+        menus.getStartButton().setOnAction(actionEvent -> {
+            window.setScene(game);
+            board.resetBoard();
         });
 
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
 
-        Scene scene = new Scene(root, 300, 250);
+        start = new Scene(menus.getStartPane(), 300, 300);
+        // Game scenel
+        game = new Scene(board.printBoard(), 300, 300);
 
-        primaryStage.setTitle("Tic-Tac-Toe");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-    public static void main(String[] args) {
-        launch(args);
+        menus.getEndButton().setOnAction(e -> window.setScene(start));
+        menus.getEndCloseButton().setOnAction(e -> window.close());
+        end = new Scene(menus.getEndPane(), 300, 300);
+
+        for(int i = 0; i < 3; i++) {
+            for(int j = 0; j < 3; j++) {
+                int finalJ = j;
+                int finalI = i;
+                board.squares[i][j].setOnAction(event -> {
+                    try {
+                        board.squares[finalI][finalJ].setPiece(GameLogic.getTurn());
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e);
+                    }
+
+
+                    if(board.checkWin()) {
+                        GameLogic.changeTurn();
+                        menus.getEndLabel().setText("The winner is " + GameLogic.getTurn());
+                        window.setScene(end);
+                    }
+                    if(board.checkDraw()) {
+                        GameLogic.changeTurn();
+                        menus.getEndLabel().setText("It is a Tie!");
+                        board.resetBoard();
+                        window.setScene(end);
+
+                    }
+
+                });
+            }
+        }
+
+        window.setScene(start);
+        window.setTitle("Tic-Tac-Toe");
+        window.show();
+
+
     }
 }
-
-
-
-
-/*import java.util.Scanner;
-public class Main {
-    public static void main(String args[]) {
-        Board board = new Board();
-        Player players[] = GameLogic.setPlayers();
-        Player winner;
-        for(int i = 0; i < 2; i++){
-            System.out.println(players[i].getName() + ": " + players[i].getPiece());
-        }
-        System.out.println("Start Game");
-        System.out.println("\nPlease enter Co-ordinates in the for of x,y\n");
-        winner = GameLogic.gameLoop(board, players);
-        System.out.println(winner.getName() + " Won!");
-        
-    }
-}*/
