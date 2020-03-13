@@ -13,6 +13,7 @@ public class GameLogic {
 
     }
 
+
     public static String getTurn() {
         return turn;
     }
