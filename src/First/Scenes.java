@@ -21,7 +21,7 @@ public class Scenes {
 
         startButton = new Button("Start Game");
         closeButton = new Button("Quit");
-        hostButton = new Button("Host");
+        hostButton = new Button("Host Game");
         //GridPane
         GridPane gridPane1 = new GridPane();
         gridPane1.setMinWidth(30);

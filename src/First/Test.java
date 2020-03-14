@@ -14,8 +14,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class Test extends Application {
     Stage window;
@@ -32,16 +34,20 @@ public class Test extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
-
-
+    public void start(Stage primaryStage) {
         Scenes menus = new Scenes();
 
         window = primaryStage;
         //Start scene
         menus.getHostButton().setOnAction(e -> {
             runServer();
-            menus.getHostButton().setText("Now Hosting");
+            try {
+                InetAddress inetAddress = InetAddress.getLocalHost();
+                menus.getHostButton().setText("Host Name: " + inetAddress.getHostName());
+            } catch (UnknownHostException ex) {
+                ex.printStackTrace();
+            }
+
         });
         menus.getCloseButton().setOnAction(e -> window.close());
         menus.getStartButton().setOnAction(actionEvent -> {
@@ -76,7 +82,7 @@ public class Test extends Application {
     }
 
     private void runServer() {
-        Runnable task = () -> server();
+        Runnable task = this::server;
         Thread serverThread = new Thread(task);
         serverThread.setDaemon(true);
         serverThread.start();
@@ -98,7 +104,7 @@ public class Test extends Application {
     }
 
     private void serverInput(Scenes menus) throws IOException {
-        String hostName = "10.10.2.223";
+        String hostName = "Leo-Pred";
         int portNumber = 4444;
         tSocket = new Socket(hostName, portNumber);
         out = new PrintWriter(tSocket.getOutputStream(), true);
@@ -159,6 +165,7 @@ public class Test extends Application {
                                 = ticProtocol.players[i % 2].getPiece();
                         ticProtocol.players[0].getOut().println(inputLine + ticProtocol.players[i % 2].getPiece());
                         ticProtocol.players[1].getOut().println(inputLine + ticProtocol.players[i % 2].getPiece());
+
                         i++;
 
                     }
