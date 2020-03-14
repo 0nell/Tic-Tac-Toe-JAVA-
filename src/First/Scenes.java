@@ -13,6 +13,7 @@ public class Scenes {
     private Button endButton;
     private Button startButton;
     private Button closeButton;
+    private Button hostButton;
     private StackPane startPane;
 
     public Scenes() {
@@ -20,6 +21,7 @@ public class Scenes {
 
         startButton = new Button("Start Game");
         closeButton = new Button("Quit");
+        hostButton = new Button("Host");
         //GridPane
         GridPane gridPane1 = new GridPane();
         gridPane1.setMinWidth(30);
@@ -27,6 +29,7 @@ public class Scenes {
         gridPane1.setPrefWidth(20);
         gridPane1.add(startButton, 5, 10, 1, 1);
         gridPane1.add(closeButton, 6, 10, 1, 1);
+        gridPane1.add(hostButton, 5, 11, 1, 1);
 
 
         startPane = new StackPane();
@@ -73,8 +76,13 @@ public class Scenes {
         return closeButton;
     }
 
+    public Button getHostButton() {
+        return hostButton;
+    }
+
     public StackPane getStartPane() {
         return startPane;
     }
+
 
 }
