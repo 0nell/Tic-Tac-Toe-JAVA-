@@ -1,5 +1,4 @@
-/*TODO Thread runs after game ends
-    Can only play one game
+/*TODO Piece placed when not players turn carries over to their next turn
  */
 
 
@@ -15,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Test extends Application {
@@ -22,7 +22,9 @@ public class Test extends Application {
     Scene game, end, start;
     Board board = new Board();
     Player player = new Player();
-
+    Socket tSocket;
+    PrintWriter out;
+    BufferedReader in;
 
     public static void main(String[] args) {
         launch(args);
@@ -31,24 +33,21 @@ public class Test extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        String hostName = "10.10.2.223";
-        int portNumber = 4444;
-        Socket tSocket = new Socket(hostName, portNumber);
-        PrintWriter out = new PrintWriter(tSocket.getOutputStream(), true);
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(tSocket.getInputStream()));
-        player.setPiece(in.readLine());
+
 
         Scenes menus = new Scenes();
 
         window = primaryStage;
         //Start scene
-
+        menus.getHostButton().setOnAction(e -> {
+            runServer();
+            menus.getHostButton().setText("Now Hosting");
+        });
         menus.getCloseButton().setOnAction(e -> window.close());
         menus.getStartButton().setOnAction(actionEvent -> {
             window.setScene(game);
             board.resetBoard();
-            getFromServer(menus, in);
+            getFromServer(menus);
         });
 
 
@@ -70,14 +69,27 @@ public class Test extends Application {
         }
 
         window.setScene(start);
-        window.setTitle("Tic-Tac-Toe - " + player.getPiece());
+        window.setTitle("Tic-Tac-Toe");
         window.show();
 
 
     }
 
-    private void getFromServer(Scenes menus, BufferedReader in) {
-        Runnable task = () -> runTask(menus, in);
+    private void runServer() {
+        Runnable task = () -> server();
+        Thread serverThread = new Thread(task);
+        serverThread.setDaemon(true);
+        serverThread.start();
+    }
+
+    private void getFromServer(Scenes menus) {
+        Runnable task = () -> {
+            try {
+                serverInput(menus);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        };
 
         Thread backgroundThread = new Thread(task);
 
@@ -85,7 +97,14 @@ public class Test extends Application {
         backgroundThread.start();
     }
 
-    private void runTask(Scenes menus, BufferedReader in) {
+    private void serverInput(Scenes menus) throws IOException {
+        String hostName = "10.10.2.223";
+        int portNumber = 4444;
+        tSocket = new Socket(hostName, portNumber);
+        out = new PrintWriter(tSocket.getOutputStream(), true);
+        in = new BufferedReader(
+                new InputStreamReader(tSocket.getInputStream()));
+        player.setPiece(in.readLine());
         String input;
         while(!board.checkWin()) {
             try {
@@ -97,6 +116,7 @@ public class Test extends Application {
                             board.squares[finalInput.charAt(0) - 48][finalInput.charAt(1) - 48].setPiece(finalInput.substring(2, 3));
                         } catch (ArrayIndexOutOfBoundsException e) {
                             menus.getEndLabel().setText(finalInput);
+                            menus.getHostButton().setText("Host");
                             window.setScene(end);
                         }
                     });
@@ -108,4 +128,50 @@ public class Test extends Application {
         }
 
     }
+
+    private void server() {
+        int portNumber = 4444;
+        int i = 0;
+        TicProtocol ticProtocol = new TicProtocol();
+
+
+        try (
+                ServerSocket serverSocket = new ServerSocket(portNumber);
+                Socket clientSocket1 = serverSocket.accept();
+                PrintWriter out1 = new PrintWriter(clientSocket1.getOutputStream(), true);
+                BufferedReader in1 = new BufferedReader(new InputStreamReader(clientSocket1.getInputStream()));
+                Socket clientSocket2 = serverSocket.accept();
+                PrintWriter out2 = new PrintWriter(clientSocket2.getOutputStream(), true);
+                BufferedReader in2 = new BufferedReader(new InputStreamReader(clientSocket2.getInputStream()))
+        ) {
+            System.out.println("Server Open");
+            ticProtocol.setPlayers(ticProtocol.players[0], in1, out1);
+            ticProtocol.setPlayers(ticProtocol.players[1], in2, out2);
+            String inputLine;
+
+
+            while(ticProtocol.gameRunning() && !(inputLine = ticProtocol.players[i % 2].getIn().readLine()).equals("exit")) {
+                if(!inputLine.equals("null")) {
+
+                    if(ticProtocol.board[inputLine.charAt(0) - 48][inputLine.charAt(1) - 48].equals("")) {
+
+                        ticProtocol.board[inputLine.charAt(0) - 48][inputLine.charAt(1) - 48]
+                                = ticProtocol.players[i % 2].getPiece();
+                        ticProtocol.players[0].getOut().println(inputLine + ticProtocol.players[i % 2].getPiece());
+                        ticProtocol.players[1].getOut().println(inputLine + ticProtocol.players[i % 2].getPiece());
+                        i++;
+
+                    }
+
+                }
+            }
+            ticProtocol.players[0].getOut().println(ticProtocol.winner);
+            ticProtocol.players[1].getOut().println(ticProtocol.winner);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Server Closed");
+    }
+
 }

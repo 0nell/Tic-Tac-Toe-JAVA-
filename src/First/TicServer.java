@@ -29,11 +29,11 @@ public class TicServer {
             String inputLine;
 
 
-            while(!ticProtocol.checkGameEnd() && !(inputLine = ticProtocol.players[i % 2].getIn().readLine()).equals("exit")) {
+            while(ticProtocol.gameRunning() && !(inputLine = ticProtocol.players[i % 2].getIn().readLine()).equals("exit")) {
                 if(!inputLine.equals("null")) {
-                    System.out.print(1);
+
                     if(ticProtocol.board[inputLine.charAt(0) - 48][inputLine.charAt(1) - 48].equals("")) {
-                        System.out.print(2);
+
                         ticProtocol.board[inputLine.charAt(0) - 48][inputLine.charAt(1) - 48]
                                 = ticProtocol.players[i % 2].getPiece();
                         ticProtocol.players[0].getOut().println(inputLine + ticProtocol.players[i % 2].getPiece());
