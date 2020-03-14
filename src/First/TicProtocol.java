@@ -11,20 +11,23 @@ public class TicProtocol {
 
     TicProtocol() {
         board = new String[3][3];
-        for(int i = 0; i < 3; i++) {
-            for(int j = 0; j < 3; j++) {
-                board[i][j] = "";
-            }
-        }
+        resetBoard();
         players = new Player[2];
         players[0] = new Player();
         players[1] = new Player();
     }
 
-    public boolean checkGameEnd() {
 
-        System.out.println(winner);
-        return checkDraw() || checkWin();
+    public void resetBoard() {
+        for(int i = 0; i < 3; i++) {
+            for(int j = 0; j < 3; j++) {
+                board[i][j] = "";
+            }
+        }
+    }
+
+    public boolean gameRunning() {
+        return !checkDraw() && !checkWin();
     }
 
     boolean checkWin() {
